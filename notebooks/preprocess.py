@@ -17,18 +17,16 @@ import librosa
 import librosa.display
 import matplotlib.pyplot as plt
 import pretty_midi
-import tensorflow as tf
-from scipy.io import wavfile
-from pathlib import Path
 import json
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 
 # ## 1. Configuration
 
 
 # Data paths
-RAW_DATA_PATH = "../data/raw/maestro-v3.0.0"
-PROCESSED_DATA_PATH = "../data/processed/maestro-v3.0.0"
+# Update these paths to point to the actual location of your dataset
+RAW_DATA_PATH = "data/raw/maestro-v3.0.0" 
+PROCESSED_DATA_PATH = "data/processed/maestro-v3.0.0"
 
 # Create processed data directory if it doesn't exist
 os.makedirs(PROCESSED_DATA_PATH, exist_ok=True)
