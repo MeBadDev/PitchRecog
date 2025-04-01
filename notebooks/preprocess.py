@@ -16,6 +16,7 @@ import pandas as pd
 import librosa
 import librosa.display
 import matplotlib.pyplot as plt
+from scipy.signal import resample
 import pretty_midi
 import json
 from tqdm import tqdm
@@ -138,15 +139,12 @@ def compute_chroma(y, sr=SR, n_chroma=12, n_fft=N_FFT, hop_length=HOP_LENGTH):
 
 def compute_harmonic_product_spectrum(X, n_harmonics=5):
     """
-    Compute Harmonic Product Spectrum (HPS) to enhance fundamental frequencies
-    X: Power spectrogram
+    Compute harmonic product spectrum
+    
     """
     H = X.copy()
     for n in range(2, n_harmonics + 1):
-        # Downsample spectrum by factor n
-        downsampled = np.zeros_like(X)
-        for i in range(len(X) // n):
-            downsampled[i] = X[i * n]
+        downsampled = resample(X, len(X) // n, axis=0)
         H *= downsampled
     return H
 
@@ -177,9 +175,8 @@ def extract_piano_notes(midi):
     
     for instrument in midi.instruments:
         # Skip non-piano instruments if any
-        if instrument.program >= 8:  # Piano programs are 0-7 in MIDI
+        if instrument.program >= 8:
             continue
-            
         for note in instrument.notes:
             notes.append({
                 'pitch': note.pitch,
@@ -300,9 +297,8 @@ def preprocess_sample(audio_path, midi_path, sample_id, output_dir, sr=SR, durat
 # ## 7. Process a Subset of MAESTRO
 
 
-# Process a small subset for demonstration
 # Adjust SAMPLE_COUNT or remove the limit for full dataset processing
-SAMPLE_COUNT = 5
+SAMPLE_COUNT = 150  # Number of samples to process from each split
 
 # Get a few samples from each split
 samples = {}
