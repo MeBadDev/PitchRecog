@@ -6,10 +6,12 @@
 import os
 import numpy as np
 import tensorflow as tf
-from keras import layers, models
+# Import mixed precision module
+from keras import layers, models, mixed_precision
 import json
 import glob
 from sklearn.model_selection import train_test_split
+
 
 # ## 1. Configuration
 
@@ -23,8 +25,8 @@ DATASET_INFO_PATH = os.path.join(PROCESSED_DATA_PATH, 'dataset_info.json')
 # (n_mels, time_steps_in_mel_spectrogram)
 # Let's load one sample to determine the shape
 # Adjust BATCH_SIZE and EPOCHS based on your system resources and desired training time
-BATCH_SIZE = 128
-EPOCHS = 15  # Start with a small number and increase as needed
+BATCH_SIZE = 16
+EPOCHS = 50# Start with a small number and increase as needed
 N_KEYS = 88  # Number of piano keys (output size)
 
 # ## 2. Load Dataset Information & Determine Input Shape
@@ -146,7 +148,8 @@ def build_model(input_shape, num_classes):
     model.add(layers.Flatten())
     model.add(layers.Dense(256, activation='relu'))
     model.add(layers.Dropout(0.5))
-    model.add(layers.Dense(num_classes, activation='sigmoid'))
+    # Use float32 for final layer to maintain numeric stability
+    model.add(layers.Dense(num_classes, activation='sigmoid', dtype='float32'))
 
     return model
 
@@ -216,7 +219,11 @@ model = build_model(INPUT_SHAPE, N_KEYS)
 # Create custom loss using computed per-class positive weights
 custom_loss = weighted_binary_crossentropy(pos_weights)
 
-model.compile(optimizer='adam',
+# Use LossScaleOptimizer for mixed precision training
+optimizer = tf.keras.optimizers.Adam()
+optimizer = mixed_precision.LossScaleOptimizer(optimizer)
+
+model.compile(optimizer=optimizer,
               loss=custom_loss,  # Using custom weighted loss
               metrics=[tf.keras.metrics.Precision(name='precision'),
                        tf.keras.metrics.Recall(name='recall'),
@@ -228,10 +235,18 @@ model.summary()
 
 print("\nStarting training...")
 
-# Optional: Add callbacks like EarlyStopping or ModelCheckpoint
+# Create a log directory for TensorBoard
+import datetime
+log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+os.makedirs(log_dir, exist_ok=True)
+print(f"TensorBoard logs will be saved to: {log_dir}")
+
+# Optional: Add callbacks like EarlyStopping, ModelCheckpoint, and TensorBoard
 callbacks = [
     tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True),
-    # tf.keras.callbacks.ModelCheckpoint('best_model.keras', save_best_only=True, monitor='val_loss')
+    # tf.keras.callbacks.ModelCheckpoint('best_model.keras', save_best_only=True, monitor='val_loss'),
+    tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1, update_freq='epoch',
+                                  profile_batch=0)  # Set profile_batch=0 to disable profiling
 ]
 
 history = model.fit(
@@ -241,6 +256,11 @@ history = model.fit(
     callbacks=callbacks if val_dataset else []
 )
 print("\nTraining finished.")
+
+# Instructions for launching TensorBoard
+print("\nTo view training visualizations, run the following command in your terminal:")
+print(f"tensorboard --logdir={log_dir}")
+print("Then open http://localhost:6006 in your web browser.")
 
 # ## 9. Evaluate the Model (Optional)
 
@@ -259,42 +279,3 @@ else:
 print("\nSaving model...")
 model.save('piano_note_recognition_model.keras')
 print("Model saved as piano_note_recognition_model.keras")
-
-# ## 11. Plot Training History (Optional)
-
-import matplotlib.pyplot as plt
-
-def plot_history(history):
-    plt.figure(figsize=(12, 4))
-
-    # Plot Precision and Recall
-    plt.subplot(1, 2, 1)
-    plt.plot(history.history['precision'], label='Train Precision')
-    if 'val_precision' in history.history:
-        plt.plot(history.history['val_precision'], label='Val Precision')
-    plt.plot(history.history['recall'], label='Train Recall')
-    if 'val_recall' in history.history:
-        plt.plot(history.history['val_recall'], label='Val Recall')
-    plt.title('Model Precision and Recall')
-    plt.ylabel('Value')
-    plt.xlabel('Epoch')
-    plt.legend(loc='lower right')
-
-    # Plot Loss and AUC
-    plt.subplot(1, 2, 2)
-    plt.plot(history.history['loss'], label='Train Loss')
-    if 'val_loss' in history.history:
-        plt.plot(history.history['val_loss'], label='Val Loss')
-    plt.plot(history.history['auc'], label='Train AUC')
-    if 'val_auc' in history.history:
-        plt.plot(history.history['val_auc'], label='Val AUC')
-    plt.title('Model Loss and AUC')
-    plt.ylabel('Value')
-    plt.xlabel('Epoch')
-    plt.legend(loc='upper right')
-
-    plt.tight_layout()
-    plt.show()
-
-if history:
-   plot_history(history)

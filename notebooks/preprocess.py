@@ -346,14 +346,27 @@ def preprocess_sample(audio_path, midi_path, sample_id, output_dir, sr=SR, durat
     # Batch size for processing windows
     window_batch_size = 200
     window_limit = 1000  # For demonstration purposes
-    windows_to_process = min(len(windows), window_limit)
+    
+    # Randomly select windows instead of taking the first 1000
+    total_windows = len(windows)
+    if total_windows > window_limit:
+        # Generate random indices and sort them for more efficient sequential access
+        random_indices = np.sort(np.random.choice(total_windows, window_limit, replace=False))
+    else:
+        # If we have fewer than the limit, use all of them
+        random_indices = np.arange(total_windows)
+    
+    windows_to_process = len(random_indices)
     
     # Process in batches - use disable=True to hide this inner progress bar
     for batch_idx in range(0, windows_to_process, window_batch_size):
-        # Get current batch
-        end_idx = min(batch_idx + window_batch_size, windows_to_process)
-        window_batch = windows[batch_idx:end_idx]
-        timestamps_batch = timestamps[batch_idx:end_idx]
+        # Get indices for current batch
+        batch_end = min(batch_idx + window_batch_size, windows_to_process)
+        batch_indices = random_indices[batch_idx:batch_end]
+        
+        # Extract windows and timestamps for this batch using random indices
+        window_batch = windows[batch_indices]
+        timestamps_batch = timestamps[batch_indices]
         
         # Create labels once per batch (more efficient)
         labels_batch = create_note_labels(notes, timestamps_batch, duration)
@@ -362,9 +375,8 @@ def preprocess_sample(audio_path, midi_path, sample_id, output_dir, sr=SR, durat
         features_batch = process_windows_batch(window_batch, sr)
         
         # Save batch results efficiently
-        for i in range(len(window_batch)):
-            abs_idx = batch_idx + i
-            window_id = f"{sample_id}_{abs_idx:06d}"
+        for i, orig_idx in enumerate(batch_indices):
+            window_id = f"{sample_id}_{orig_idx:06d}"  # Use original index in the filename
             
             # Save features - minimize I/O by batching
             feature_path = os.path.join(features_dir, f"{window_id}.npz")
@@ -443,11 +455,17 @@ def process_split(split_name, split_df, raw_data_path, processed_data_path, proc
 def log_handler(log_queue):
     """Process log messages from the queue"""
     while True:
-        message = log_queue.get()
-        if message == "DONE":
+        try:
+            # Add timeout to avoid blocking forever
+            message = log_queue.get(block=True, timeout=300)  # 5-minute timeout
+            if message == "DONE":
+                break
+            # For log handler, we don't use print to avoid cluttering the console with duplicate messages
+            # This log queue can be used for logging to a file instead
+        except Exception as e:
+            # If we timeout or get any other exception, log it and exit
+            print(f"Log handler exiting due to: {e}")
             break
-        # For log handler, we don't use print to avoid cluttering the console with duplicate messages
-        # This log queue can be used for logging to a file instead
 
 # ## 7. Process a Subset of MAESTRO
 
@@ -458,7 +476,7 @@ if __name__ == '__main__':
         multiprocessing.set_start_method('spawn', force=True)
 
     # Adjust SAMPLE_COUNT or remove the limit for full dataset processing
-    SAMPLE_COUNT = 10  # Number of samples to process from each split
+    SAMPLE_COUNT = 50 # Number of samples to process from each split
     NUM_PROCESSES = multiprocessing.cpu_count()  # Use all available CPU cores
     
     # Add option to disable progress bars
