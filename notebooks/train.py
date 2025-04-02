@@ -129,25 +129,40 @@ def create_dataset(feature_files, label_files, batch_size):
 # ## 4. Define the Model Architecture (Simple CNN Example)
 
 def build_model(input_shape, num_classes):
-    """Builds a CNN model adapted for short time dimension."""
+    """Builds a CNN model adapted for short time dimension with regularization and batch normalization."""
     model = models.Sequential(name="PianoNoteCNN_Adapted")
 
     # Use Input layer to define shape explicitly (Good practice)
     model.add(layers.Input(shape=input_shape))
 
-    # Convolutional layers with 'same' padding
-    model.add(layers.Conv2D(32, (3, 3), activation='relu', padding='same'))
+    # Convolutional layers with 'same' padding, Batch Normalization, and L2 Regularization
+    model.add(layers.Conv2D(32, (3, 3), padding='same',
+                            kernel_regularizer=tf.keras.regularizers.L2(0.0005)))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Activation('relu'))
     model.add(layers.MaxPooling2D(pool_size=(2, 1)))  # Pool along frequency axis
+    model.add(layers.Dropout(0.25)) # Added dropout after the first pooling layer
 
-    model.add(layers.Conv2D(64, (3, 3), activation='relu', padding='same'))
+    model.add(layers.Conv2D(64, (3, 3), padding='same',
+                            kernel_regularizer=tf.keras.regularizers.L2(0.0005)))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Activation('relu'))
     model.add(layers.MaxPooling2D(pool_size=(2, 1)))
+    model.add(layers.Dropout(0.25)) # Added dropout after the second pooling layer
 
-    model.add(layers.Conv2D(128, (3, 3), activation='relu', padding='same'))
+    model.add(layers.Conv2D(128, (3, 3), padding='same',
+                            kernel_regularizer=tf.keras.regularizers.L2(0.001)))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Activation('relu'))
     model.add(layers.MaxPooling2D(pool_size=(2, 1)))
+    model.add(layers.Dropout(0.25)) # Added dropout after the third pooling layer
 
     model.add(layers.Flatten())
-    model.add(layers.Dense(256, activation='relu'))
-    model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(256, activation='relu',
+                            kernel_regularizer=tf.keras.regularizers.L2(0.001)))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Dropout(0.5)) # Keeping the dropout here
+
     # Use float32 for final layer to maintain numeric stability
     model.add(layers.Dense(num_classes, activation='sigmoid', dtype='float32'))
 
@@ -243,8 +258,8 @@ print(f"TensorBoard logs will be saved to: {log_dir}")
 
 # Optional: Add callbacks like EarlyStopping, ModelCheckpoint, and TensorBoard
 callbacks = [
-    tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True),
-    # tf.keras.callbacks.ModelCheckpoint('best_model.keras', save_best_only=True, monitor='val_loss'),
+    tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True),
+    tf.keras.callbacks.ModelCheckpoint('best_model.keras', save_best_only=True, monitor='val_loss'),
     tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1, update_freq='epoch',
                                   profile_batch=0)  # Set profile_batch=0 to disable profiling
 ]

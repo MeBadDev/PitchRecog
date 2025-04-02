@@ -29,13 +29,9 @@ from numba import jit, prange  # For JIT compilation and parallel loops
 import threading
 
 # Try to import optional acceleration libraries
-try:
-    import numba
-    HAS_NUMBA = True
-    print("Numba JIT acceleration available")
-except ImportError:
-    HAS_NUMBA = False
-    print("Numba JIT acceleration not available")
+HAS_NUMBA = False
+print("Numba JIT acceleration not available")
+
 
 # ## 1. Configuration
 
@@ -49,11 +45,11 @@ PROCESSED_DATA_PATH = "data/processed/maestro-v3.0.0"
 os.makedirs(PROCESSED_DATA_PATH, exist_ok=True)
 
 # Audio parameters
-SR = 22050  # Sample rate in Hz
+SR = 11025  # Sample rate in Hz
 DURATION = 0.1 # Window size in seconds
-HOP_LENGTH = 512  # Hop length for STFT
-N_FFT = 2048  # Number of FFT points
-N_MELS = 128  # Number of mel bands
+HOP_LENGTH = 1024  # Hop length for STFT
+N_FFT = 1024  # Number of FFT points
+N_MELS = 64  # Number of mel bands
 FMIN = 27.5  # Lowest piano key frequency (A0)
 FMAX = 4186.0  # Highest piano key frequency (C8)
 
@@ -286,16 +282,16 @@ create_note_labels = create_note_labels_optimized
 # ## 6. Preprocessing Pipeline
 
 
-def process_windows_batch(windows_batch, sr=SR, n_fft=N_FFT, hop_length=HOP_LENGTH):
+def process_windows_batch(windows_batch, sr=SR, n_fft=N_FFT, hop_length=HOP_LENGTH, n_mels=N_MELS, fmin=FMIN, fmax=FMAX):
     """
     Process a batch of windows using threading for I/O bound operations
     """
-    mel_fb = get_mel_filterbank(sr, n_fft, N_MELS, FMIN, FMAX)
+    mel_fb = get_mel_filterbank(sr, n_fft, n_mels, fmin, fmax)
     results = []
     
     # Define worker function for each window
     def process_window(window, idx):
-        mel_spec = compute_mel_spectrogram(window, sr, N_MELS, n_fft, hop_length, FMIN, FMAX)
+        mel_spec = compute_mel_spectrogram(window, sr, n_mels, n_fft, hop_length, fmin, fmax)
         results.append((idx, mel_spec))
     
     # Use threading for I/O bound operations
@@ -319,7 +315,8 @@ def process_windows_batch(windows_batch, sr=SR, n_fft=N_FFT, hop_length=HOP_LENG
     results.sort(key=lambda x: x[0])
     return [r[1] for r in results]
 
-def preprocess_sample(audio_path, midi_path, sample_id, output_dir, sr=SR, duration=DURATION):
+def preprocess_sample(audio_path, midi_path, sample_id, output_dir, sr=SR, duration=DURATION, 
+                     n_fft=N_FFT, hop_length=HOP_LENGTH, n_mels=N_MELS, fmin=FMIN, fmax=FMAX):
     """
     Optimized preprocessing for a single audio-MIDI pair
     """
@@ -371,8 +368,16 @@ def preprocess_sample(audio_path, midi_path, sample_id, output_dir, sr=SR, durat
         # Create labels once per batch (more efficient)
         labels_batch = create_note_labels(notes, timestamps_batch, duration)
         
-        # Process all windows in this batch with optimized function
-        features_batch = process_windows_batch(window_batch, sr)
+        # Process all windows in this batch with optimized function - pass all constants
+        features_batch = process_windows_batch(
+            window_batch, 
+            sr=sr, 
+            n_fft=n_fft, 
+            hop_length=hop_length, 
+            n_mels=n_mels, 
+            fmin=fmin, 
+            fmax=fmax
+        )
         
         # Save batch results efficiently
         for i, orig_idx in enumerate(batch_indices):
