@@ -3,21 +3,21 @@
   {
    "cell_type": "code",
    "execution_count": 1,
-   "id": "afe38507",
+   "id": "280e1b7b",
    "metadata": {
     "_cell_guid": "b1076dfc-b9ad-4769-8c92-a6c4dae69d19",
     "_uuid": "8f2839f25d086af736a60e9eeb907d3b93b6e0e5",
     "execution": {
-     "iopub.execute_input": "2025-04-04T12:57:01.630851Z",
-     "iopub.status.busy": "2025-04-04T12:57:01.630257Z",
-     "iopub.status.idle": "2025-04-04T12:57:02.857558Z",
-     "shell.execute_reply": "2025-04-04T12:57:02.855917Z"
+     "iopub.execute_input": "2025-04-04T14:00:01.334532Z",
+     "iopub.status.busy": "2025-04-04T14:00:01.334019Z",
+     "iopub.status.idle": "2025-04-04T14:00:02.336405Z",
+     "shell.execute_reply": "2025-04-04T14:00:02.335239Z"
     },
     "papermill": {
-     "duration": 1.233933,
-     "end_time": "2025-04-04T12:57:02.859819",
+     "duration": 1.008338,
+     "end_time": "2025-04-04T14:00:02.338361",
      "exception": false,
-     "start_time": "2025-04-04T12:57:01.625886",
+     "start_time": "2025-04-04T14:00:01.330023",
      "status": "completed"
     },
     "tags": []
@@ -68,19 +68,19 @@
   {
    "cell_type": "code",
    "execution_count": 2,
-   "id": "ffd6b2f4",
+   "id": "427f33d6",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2025-04-04T12:57:02.867718Z",
-     "iopub.status.busy": "2025-04-04T12:57:02.867021Z",
-     "iopub.status.idle": "2025-04-04T12:57:02.872117Z",
-     "shell.execute_reply": "2025-04-04T12:57:02.870797Z"
+     "iopub.execute_input": "2025-04-04T14:00:02.344646Z",
+     "iopub.status.busy": "2025-04-04T14:00:02.344115Z",
+     "iopub.status.idle": "2025-04-04T14:00:02.348158Z",
+     "shell.execute_reply": "2025-04-04T14:00:02.347228Z"
     },
     "papermill": {
-     "duration": 0.011049,
-     "end_time": "2025-04-04T12:57:02.874181",
+     "duration": 0.008748,
+     "end_time": "2025-04-04T14:00:02.349801",
      "exception": false,
-     "start_time": "2025-04-04T12:57:02.863132",
+     "start_time": "2025-04-04T14:00:02.341053",
      "status": "completed"
     },
     "tags": []
@@ -102,19 +102,19 @@
   {
    "cell_type": "code",
    "execution_count": 3,
-   "id": "4045e73a",
+   "id": "ba17708b",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2025-04-04T12:57:02.881076Z",
-     "iopub.status.busy": "2025-04-04T12:57:02.880598Z",
-     "iopub.status.idle": "2025-04-04T12:57:36.070502Z",
-     "shell.execute_reply": "2025-04-04T12:57:36.068601Z"
+     "iopub.execute_input": "2025-04-04T14:00:02.355817Z",
+     "iopub.status.busy": "2025-04-04T14:00:02.355429Z",
+     "iopub.status.idle": "2025-04-04T14:00:30.801210Z",
+     "shell.execute_reply": "2025-04-04T14:00:30.799731Z"
     },
     "papermill": {
-     "duration": 33.195909,
-     "end_time": "2025-04-04T12:57:36.072871",
+     "duration": 28.450763,
+     "end_time": "2025-04-04T14:00:30.802990",
      "exception": false,
-     "start_time": "2025-04-04T12:57:02.876962",
+     "start_time": "2025-04-04T14:00:02.352227",
      "status": "completed"
     },
     "tags": []
@@ -126,7 +126,7 @@
      "text": [
       "Collecting pretty_midi\r\n",
       "  Downloading pretty_midi-0.2.10.tar.gz (5.6 MB)\r\n",
-      "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m5.6/5.6 MB\u001b[0m \u001b[31m43.1 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\r\n",
+      "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m5.6/5.6 MB\u001b[0m \u001b[31m43.7 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\r\n",
       "\u001b[?25h  Preparing metadata (setup.py) ... \u001b[?25l\u001b[?25hdone\r\n",
       "Collecting note_seq\r\n",
       "  Downloading note_seq-0.0.5-py3-none-any.whl.metadata (1.1 kB)\r\n",
@@ -206,17 +206,17 @@
       "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.10/dist-packages (from requests>=2.19.0->pooch>=1.1->librosa) (2.3.0)\r\n",
       "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.10/dist-packages (from requests>=2.19.0->pooch>=1.1->librosa) (2025.1.31)\r\n",
       "Downloading note_seq-0.0.5-py3-none-any.whl (209 kB)\r\n",
-      "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m209.4/209.4 kB\u001b[0m \u001b[31m10.4 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\r\n",
+      "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m209.4/209.4 kB\u001b[0m \u001b[31m12.1 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\r\n",
       "\u001b[?25hDownloading mido-1.3.3-py3-none-any.whl (54 kB)\r\n",
-      "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m54.6/54.6 kB\u001b[0m \u001b[31m2.4 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\r\n",
+      "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m54.6/54.6 kB\u001b[0m \u001b[31m2.9 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\r\n",
       "\u001b[?25hDownloading protobuf-6.30.2-cp39-abi3-manylinux2014_x86_64.whl (316 kB)\r\n",
-      "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m316.2/316.2 kB\u001b[0m \u001b[31m15.0 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\r\n",
+      "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m316.2/316.2 kB\u001b[0m \u001b[31m17.2 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\r\n",
       "\u001b[?25hBuilding wheels for collected packages: pretty_midi, intervaltree\r\n",
       "  Building wheel for pretty_midi (setup.py) ... \u001b[?25l\u001b[?25hdone\r\n",
-      "  Created wheel for pretty_midi: filename=pretty_midi-0.2.10-py3-none-any.whl size=5592287 sha256=fd2b51b8a607c391815897152db745ffa2870d1f0c9e0fa70ae404603d2e8a20\r\n",
+      "  Created wheel for pretty_midi: filename=pretty_midi-0.2.10-py3-none-any.whl size=5592287 sha256=68b4dde2cdad7444673eaa8fffd228d65d5403adcefa01dd9301319877d97a56\r\n",
       "  Stored in directory: /root/.cache/pip/wheels/cd/a5/30/7b8b7f58709f5150f67f98fde4b891ebf0be9ef07a8af49f25\r\n",
       "  Building wheel for intervaltree (setup.py) ... \u001b[?25l\u001b[?25hdone\r\n",
-      "  Created wheel for intervaltree: filename=intervaltree-3.1.0-py2.py3-none-any.whl size=26097 sha256=5119e0d99338c3aed984cba68267816f16bce9297153e34101a24744a2c3a4fa\r\n",
+      "  Created wheel for intervaltree: filename=intervaltree-3.1.0-py2.py3-none-any.whl size=26097 sha256=97a68342771bc770e4f2c24db1e39f71ebf401525414493a31c01825de211d5e\r\n",
       "  Stored in directory: /root/.cache/pip/wheels/fa/80/8c/43488a924a046b733b64de3fac99252674c892a4c3801c0a61\r\n",
       "Successfully built pretty_midi intervaltree\r\n",
       "Installing collected packages: protobuf, mido, intervaltree, pretty_midi, note_seq\r\n",
@@ -261,19 +261,19 @@
   {
    "cell_type": "code",
    "execution_count": 4,
-   "id": "4119f11a",
+   "id": "0266e482",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2025-04-04T12:57:36.084612Z",
-     "iopub.status.busy": "2025-04-04T12:57:36.084137Z",
-     "iopub.status.idle": "2025-04-04T13:04:36.889804Z",
-     "shell.execute_reply": "2025-04-04T13:04:36.887781Z"
+     "iopub.execute_input": "2025-04-04T14:00:30.813375Z",
+     "iopub.status.busy": "2025-04-04T14:00:30.812902Z",
+     "iopub.status.idle": "2025-04-04T14:12:33.476788Z",
+     "shell.execute_reply": "2025-04-04T14:12:33.475687Z"
     },
     "papermill": {
-     "duration": 420.814261,
-     "end_time": "2025-04-04T13:04:36.892183",
+     "duration": 722.675515,
+     "end_time": "2025-04-04T14:12:33.483012",
      "exception": false,
-     "start_time": "2025-04-04T12:57:36.077922",
+     "start_time": "2025-04-04T14:00:30.807497",
      "status": "completed"
     },
     "tags": []
@@ -283,7 +283,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Total frames saved: 50000/50000\r\n",
+      "Total frames saved: 100000/100000\r\n",
       "Finished collecting random frames.\n"
      ]
     }
@@ -306,13 +306,13 @@
     "RAW_DATA_PATH = \"/kaggle/input/maestrov300-hdf5\"\n",
     "PROCESSED_DATA_PATH = \"/kaggle/working/\"\n",
     "SAMPLE_RATE = 16000  # Sample rate in Hz\n",
-    "DURATION = 0.1 # Window size in seconds\n",
-    "HOP_LENGTH = 1024  # Hop length for STFT\n",
+    "DURATION = 0.2 # Window size in seconds\n",
+    "HOP_LENGTH = 512  # Hop length for STFT\n",
     "N_FFT = 1024  # Number of FFT points\n",
-    "N_MELS = 64  # Number of mel bands\n",
+    "N_MELS = 128  # Number of mel bands\n",
     "FMIN = 27.5  # Lowest piano key frequency (A0)\n",
     "FMAX = 4186.0  # Highest piano key frequency (C8)\n",
-    "TOTAL_FRAMES_TO_SAVE = 50000\n",
+    "TOTAL_FRAMES_TO_SAVE = 100000\n",
     "\n",
     "# Assuming the metadata CSV file is in the RAW_DATA_PATH\n",
     "METADATA_FILE = os.path.join(RAW_DATA_PATH, \"maestro-v3.0.0.csv\")\n",
@@ -541,14 +541,14 @@
   },
   "papermill": {
    "default_parameters": {},
-   "duration": 461.021594,
-   "end_time": "2025-04-04T13:04:39.380812",
+   "duration": 756.265279,
+   "end_time": "2025-04-04T14:12:34.812464",
    "environment_variables": {},
    "exception": null,
    "input_path": "__notebook__.ipynb",
    "output_path": "__notebook__.ipynb",
    "parameters": {},
-   "start_time": "2025-04-04T12:56:58.359218",
+   "start_time": "2025-04-04T13:59:58.547185",
    "version": "2.6.0"
   }
  },
